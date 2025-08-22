@@ -1,0 +1,6 @@
+# Data folder
+data/processed/
+data/external/
+data/raw/
+
+projects/covid_chest_classification/model/
