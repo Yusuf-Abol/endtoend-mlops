@@ -2,5 +2,6 @@
 data/processed/
 data/external/
 data/raw/
+mlruns/
 
 projects/covid_chest_classification/model/
