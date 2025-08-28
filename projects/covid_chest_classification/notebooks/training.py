@@ -77,7 +77,7 @@ def train(
     loss_fn,
     train_loader,
     val_loader,
-    epochs=20,
+    epochs=23,
     device="cpu",
     use_train_accuracy=True,
 ):

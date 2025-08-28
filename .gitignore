@@ -2,6 +2,9 @@
 data/processed/
 data/external/
 data/raw/
+
 mlruns/
+
+projects/covid_chest_classification/notebooks/__pycache__/
 
 projects/covid_chest_classification/model/
