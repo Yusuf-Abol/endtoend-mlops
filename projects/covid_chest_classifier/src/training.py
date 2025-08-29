@@ -14,36 +14,6 @@ def class_counts(dataset):
     return pd.Series({cat: c[idx] for cat, idx in class_to_index.items()})
 
 
-def early_stopping(validation_loss, best_val_loss, counter):
-    
-    stop = False
-    if validation_loss < best_val_loss:
-        counter = 0
-    else:
-        counter += 1
-    
-    # check if counter is >= patience (5 epoch in our case)
-    # set stop variable accordingly
-    if counter >= 5:
-        stop = True
-        
-    return counter, stop
-
-
-def checkpointing(validation_loss, best_val_loss, model, opitimizer, save_path):
-    
-    if validation_loss < best_val_loss:
-        torch.save(
-            {
-                "model_state_dict":model.state_dict(),
-                "optimizer_state_dict": optimizer.state_dict(),
-                "loss": best_val_loss,
-            },
-            save_path,
-        )
-        print(f"Checkpoint saved with validation{validation_loss:.4f}")
-
-
 def train_epoch(model, optimizer, loss_fn, data_loader, device="cpu"):
     training_loss = 0.0
     model.train()

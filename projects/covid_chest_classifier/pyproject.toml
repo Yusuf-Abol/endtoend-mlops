@@ -1,5 +1,5 @@
 [project]
-name = "my_project"
+name = "covid_chest_classifier"
 version = "0.1.0"
 
 [tool.setuptools]
