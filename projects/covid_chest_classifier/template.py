@@ -22,8 +22,8 @@ list_of_files = [
     "params.yaml",
     "requirements.txt",
     "setup.py",
-    "notebooks/data_exploration.ipynb",
-    "notebooks/training.ipynb",
+#    "notebooks/data_exploration.ipynb",  turned off now since it is already created
+#    "notebooks/training.ipynb",  turned off now since it is already created
     "templates/index.html"
 
 
