@@ -3,7 +3,9 @@ from collections import Counter
 import pandas as pd
 import torch
 from tqdm.notebook import tqdm
-
+import mlflow
+import mlflow.pytorch
+from src.utils import early_stopping, checkpointing
 
 def class_counts(dataset):
     c = Counter(x[1] for x in tqdm(dataset))
@@ -14,63 +16,40 @@ def class_counts(dataset):
     return pd.Series({cat: c[idx] for cat, idx in class_to_index.items()})
 
 
+# ------------------ Your helper functions ------------------
 def train_epoch(model, optimizer, loss_fn, data_loader, device="cpu"):
-    training_loss = 0.0
     model.train()
+    running_loss = 0.0
 
-    # Iterate over all batches in the training set to complete one epoch
     for inputs, targets in tqdm(data_loader, desc="Training", leave=False):
+        inputs, targets = inputs.to(device), targets.to(device)
         optimizer.zero_grad()
-        inputs = inputs.to(device)
-        targets = targets.to(device)
-
-        output = model(inputs)
-        loss = loss_fn(output, targets)
-
+        outputs = model(inputs)
+        loss = loss_fn(outputs, targets)
         loss.backward()
         optimizer.step()
-        training_loss += loss.data.item() * inputs.size(0)
+        running_loss += loss.item() * inputs.size(0)
 
-    return training_loss / len(data_loader.dataset)
-
-
-def predict(model, data_loader, device="cpu"):
-    all_probs = torch.tensor([]).to(device)
-
-    model.eval()
-    with torch.no_grad():
-        for inputs, targets in tqdm(data_loader, desc="Predicting", leave=False):
-            inputs = inputs.to(device)
-            output = model(inputs)
-            probs = torch.nn.functional.softmax(output, dim=1)
-            all_probs = torch.cat((all_probs, probs), dim=0)
-
-    return all_probs
-
+    return running_loss / len(data_loader.dataset)
 
 def score(model, data_loader, loss_fn, device="cpu"):
-    total_loss = 0
-    total_correct = 0
-
     model.eval()
+    total_loss, total_correct = 0, 0
+
     with torch.no_grad():
-        for inputs, targets in tqdm(data_loader, desc="Scoring", leave=False):
-            inputs = inputs.to(device)
-            output = model(inputs)
+        for inputs, targets in tqdm(data_loader, desc="Evaluating", leave=False):
+            inputs, targets = inputs.to(device), targets.to(device)
+            outputs = model(inputs)
+            loss = loss_fn(outputs, targets)
+            total_loss += loss.item() * inputs.size(0)
+            total_correct += torch.sum(torch.argmax(outputs, dim=1) == targets).item()
 
-            targets = targets.to(device)
-            loss = loss_fn(output, targets)
-            total_loss += loss.data.item() * inputs.size(0)
+    n_samples = len(data_loader.dataset)
+    avg_loss = total_loss / n_samples
+    accuracy = total_correct / n_samples
+    return avg_loss, accuracy
 
-            correct = torch.eq(torch.argmax(output, dim=1), targets)
-            total_correct += torch.sum(correct).item()
-
-    n_observations = data_loader.batch_size * len(data_loader)
-    average_loss = total_loss / n_observations
-    accuracy = total_correct / n_observations
-    return average_loss, accuracy
-
-
+# ------------------ Train function ------------------
 def train(
     model,
     optimizer,
@@ -79,37 +58,91 @@ def train(
     val_loader,
     epochs=23,
     device="cpu",
-    use_train_accuracy=True,
+    scheduler=None,
+    checkpoint_path=None,
+    early_stopping_fn=None,
 ):
-    # Track the model progress over epochs
-    train_losses = []
-    train_accuracies = []
-    val_losses = []
-    val_accuracies = []
+    train_losses, train_accuracies = [], []
+    val_losses, val_accuracies = [], []
+    learning_rates = []
+    best_val_loss = float("inf")
+    early_stop_counter = 0
+    last_epoch = 0
 
-    for epoch in range(1, epochs + 1):
-        # Train one epoch
-        training_loss = train_epoch(model, optimizer, loss_fn, train_loader, device)
+    # MLflow experiment
+    with mlflow.start_run(run_name="image_classification_run"):
 
-        # Evaluate training results
-        if use_train_accuracy:
-            train_loss, train_accuracy = score(model, train_loader, loss_fn, device)
-        else:
-            train_loss = training_loss
-            train_accuracy = 0
+        # Log hyperparameters
+        mlflow.log_param("epochs", epochs)
+        mlflow.log_param("optimizer", optimizer.__class__.__name__)
+        mlflow.log_param("loss_fn", loss_fn.__class__.__name__)
+        mlflow.log_param("scheduler", scheduler.__class__.__name__ if scheduler else "None")
+
+        # Initial evaluation before training
+        train_loss, train_acc = score(model, train_loader, loss_fn, device)
+        val_loss, val_acc = score(model, val_loader, loss_fn, device)
+
         train_losses.append(train_loss)
-        train_accuracies.append(train_accuracy)
+        train_accuracies.append(train_acc)
+        val_losses.append(val_loss)
+        val_accuracies.append(val_acc)
 
-        # Test on validation set
-        validation_loss, validation_accuracy = score(model, val_loader, loss_fn, device)
-        val_losses.append(validation_loss)
-        val_accuracies.append(validation_accuracy)
+        mlflow.log_metric("train_loss", train_loss, step=0)
+        mlflow.log_metric("train_acc", train_acc, step=0)
+        mlflow.log_metric("val_loss", val_loss, step=0)
+        mlflow.log_metric("val_acc", val_acc, step=0)
 
-        print(f"Epoch: {epoch}")
-        print(f"    Training loss: {train_loss:.2f}")
-        if use_train_accuracy:
-            print(f"    Training accuracy: {train_accuracy:.2f}")
-        print(f"    Validation loss: {validation_loss:.2f}")
-        print(f"    Validation accuracy: {validation_accuracy:.2f}")
+        print("Initial evaluation before training:")
+        print(f"Train loss: {train_loss:.4f}, Train acc: {train_acc*100:.2f}%")
+        print(f"Val loss: {val_loss:.4f}, Val acc: {val_acc*100:.2f}%")
 
-    return train_losses, val_losses, train_accuracies, val_accuracies
+        # Training loop
+        for epoch in range(1, epochs + 1):
+            last_epoch = epoch
+            print(f"\nEpoch {epoch}/{epochs}")
+
+            train_epoch(model, optimizer, loss_fn, train_loader, device)
+            train_loss, train_acc = score(model, train_loader, loss_fn, device)
+            val_loss, val_acc = score(model, val_loader, loss_fn, device)
+
+            train_losses.append(train_loss)
+            train_accuracies.append(train_acc)
+            val_losses.append(val_loss)
+            val_accuracies.append(val_acc)
+
+            # Log metrics to MLflow
+            mlflow.log_metric("train_loss", train_loss, step=epoch)
+            mlflow.log_metric("train_acc", train_acc, step=epoch)
+            mlflow.log_metric("val_loss", val_loss, step=epoch)
+            mlflow.log_metric("val_acc", val_acc, step=epoch)
+
+            # Learning rate
+            lr = optimizer.param_groups[0]["lr"]
+            learning_rates.append(lr)
+            mlflow.log_metric("learning_rate", lr, step=epoch)
+            if scheduler:
+                scheduler.step()
+
+            print(f"Train loss: {train_loss:.4f}, Train acc: {train_acc*100:.2f}%")
+            print(f"Val loss: {val_loss:.4f}, Val acc: {val_acc*100:.2f}%")
+            print(f"Learning rate: {lr:.6f}")
+
+            # Checkpointing
+            if checkpoint_path:
+                checkpointing(val_loss, best_val_loss, model, optimizer, checkpoint_path)
+
+            # Early stopping
+            if early_stopping_fn:
+                early_stop_counter, stop = early_stopping_fn(val_loss, best_val_loss, early_stop_counter)
+                if stop:
+                    print(f"Early stopping triggered at epoch {epoch}")
+                    break
+
+            # Update best validation loss
+            if val_loss < best_val_loss:
+                best_val_loss = val_loss
+
+        # Save final model to MLflow
+        mlflow.pytorch.log_model(model, "model")
+
+    return learning_rates, train_losses, val_losses, train_accuracies, val_accuracies, last_epoch
