@@ -1,0 +1,13 @@
+Metadata-Version: 2.1
+Name: ccclassifier
+Version: 0.0.0
+Summary: A small python package for image detection
+Home-page: https://github.com/Yusuf-Abol/endtoend-mlops
+Author: Yusuf-Abol
+Author-email: yusufabolarinwa@gmail.com
+Project-URL: Bug Tracker, https://github.com/Yusuf-Abol/endtoend-mlops/issues
+Requires-Python: >=3.7
+Description-Content-Type: text/markdown
+
+# ccclassifier
+Small package for image detection.
