@@ -19,4 +19,4 @@ logging.basicConfig(
     ]
 )
 
-logger = logging.getLogger("chestClassifierLogger")
+logger = logging.getLogger("ccclassifierLogger")
