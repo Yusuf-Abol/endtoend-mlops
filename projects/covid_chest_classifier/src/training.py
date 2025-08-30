@@ -5,7 +5,7 @@ import torch
 from tqdm.notebook import tqdm
 import mlflow
 import mlflow.pytorch
-from projects.covid_chest_classifier.src.callbacks import early_stopping, checkpointing
+from .callbacks import early_stopping, checkpointing
 
 def class_counts(dataset):
     c = Counter(x[1] for x in tqdm(dataset))
