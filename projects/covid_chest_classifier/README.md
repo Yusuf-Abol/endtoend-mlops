@@ -20,16 +20,16 @@ Small package for image detection.
 Clone the repository
 
 ```bash
-https://github.com/krishnaik06/Kidney-Disease-Classification-Deep-Learning-Project
+https://github.com/Yusuf-Abol/endtoend-mlops/tree/main/projects/covid_chest_classifier
 ```
 ### STEP 01- Create a conda environment after opening the repository
 
 ```bash
-conda create -n cnncls python=3.8 -y
+conda create -n tubato_env python=3.11.13 -y
 ```
 
 ```bash
-conda activate cnncls
+ conda activate tubato_env 
 ```
 
 
