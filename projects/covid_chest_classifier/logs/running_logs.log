@@ -10,3 +10,4 @@
 [2025-08-31 16:29:55,463: INFO: common: created directory at: artifacts]
 [2025-08-31 16:29:55,465: INFO: common: created directory at: artifacts/data_ingestion]
 [2025-08-31 16:29:55,466: INFO: 3390099456: Downloading data from https://drive.google.com/file/d/18OkRLS8T1gLfFAilJJF0alWBYx6NysEA/view?usp=drive_link into file artifacts/data_ingestion/data.zip]
+[2025-08-31 16:47:13,250: INFO: 3390099456: Downloaded data from https://drive.google.com/file/d/18OkRLS8T1gLfFAilJJF0alWBYx6NysEA/view?usp=drive_link into file artifacts/data_ingestion/data.zip]
