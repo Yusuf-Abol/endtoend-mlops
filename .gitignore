@@ -3,6 +3,8 @@ data/processed/
 data/external/
 data/raw/
 
+logs/
+
 mlruns/
 
 projects/
