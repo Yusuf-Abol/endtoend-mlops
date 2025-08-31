@@ -1,3 +1,6 @@
-projects/covid_chest_classifier/notebooks/__pycache__/
+notebooks/__pycache__
 
-projects/covid_chest_classifier/model/
+# Ignore dataset zip in notebooks
+notebooks/Covid19-dataset.zip
+
+model/
