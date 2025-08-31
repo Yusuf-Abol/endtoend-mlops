@@ -6,6 +6,8 @@ src/ccclassifier.egg-info/SOURCES.txt
 src/ccclassifier.egg-info/dependency_links.txt
 src/ccclassifier.egg-info/top_level.txt
 src/ccclassifier/components/__init__.py
+src/ccclassifier/config/__init__.py
+src/ccclassifier/config/configuration.py
 src/ccclassifier/constants/__init__.py
 src/ccclassifier/entity/__init__.py
 src/ccclassifier/pipeline/__init__.py

@@ -1,7 +1,0 @@
-[project]
-name = "ccclassifier"
-version = "0.0.0"
-readme = "README.md"
-
-[tool.setuptools]
-packages = ["src"]

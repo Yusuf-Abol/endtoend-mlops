@@ -1,6 +1,14 @@
-notebooks/__pycache__
+# Python cache / bytecode
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
 
-# Ignore dataset zip in notebooks
-notebooks/Covid19-dataset.zip
-
+# Logs and artifacts
+logs/
+artifacts/
+src/ccclassifier/logs/
 model/
+
+# Datasets
+notebooks/Covid19-dataset.zip
