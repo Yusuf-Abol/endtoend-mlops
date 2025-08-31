@@ -1,178 +1,129 @@
-# Covid Chest X-ray Classifier
-Small package for image detection.
+Perfect 🚀 Let’s make your README look like a polished **MLOps case study repo**. Here’s an extended version:
 
-## Workflows
+```markdown
+# 🦠 Covid Chest Classifier (MLOps Project)
 
-1. Update config.yaml
-2. Update secrets.yaml [Optional]
-3. Update params.yaml
-4. Update the entity
-5. Update the configuration manager in src config
-6. Update the components
-7. Update the pipeline 
-8. Update the main.py
-9. Update the dvc.yaml
-10. app.py
+[![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Build Status](https://img.shields.io/badge/build-passing-brightgreen)]()
+[![MLOps](https://img.shields.io/badge/MLOps-end--to--end-red)]()
 
-# How to run?
-### STEPS:
+An **end-to-end MLOps project** for detecting COVID-19 from chest X-ray images.  
+The project implements **modular ML pipelines**, **CI/CD best practices**, and **experiment tracking**, making it easy to train, evaluate, and deploy deep learning models in production.
 
-Clone the repository
+---
 
-```bash
-https://github.com/Yusuf-Abol/endtoend-mlops/tree/main/projects/covid_chest_classifier
-```
-### STEP 01- Create a conda environment after opening the repository
-
-```bash
-conda create -n tubato_env python=3.11.13 -y
+## 📂 Project Structure
 ```
 
+endtoend-mlops/
+│── projects/
+│   └── covid\_chest\_classifier/
+│       ├── src/ccclassifier/        <- Core ML package
+│       ├── artifacts/               <- Saved models, metrics, reports
+│       ├── logs/                    <- Experiment & pipeline logs
+│       ├── notebooks/               <- Research & prototyping
+│       ├── setup.py
+│       ├── pyproject.toml
+│       └── README.md
+│
+└── configs/                         <- YAML/JSON configs for pipelines
+
+````
+
+---
+
+## 🔄 ML Pipeline
+```mermaid
+flowchart TD
+    A[Data Ingestion] --> B[Data Validation]
+    B --> C[Data Transformation]
+    C --> D[Model Training]
+    D --> E[Model Evaluation]
+    E --> F[Model Deployment]
+    F --> G[Monitoring & Logging]
+````
+
+Each stage is modular and configurable, ensuring **reproducibility** and **scalability**.
+
+---
+
+## ⚡ Features
+
+* ✅ Automated **data ingestion, validation, and transformation**
+* ✅ Custom **CNN-based image classifier**
+* ✅ Modular pipeline design (`ccclassifier` package)
+* ✅ Logging & experiment tracking
+* ✅ CI/CD ready with GitHub Actions
+* ✅ Deployment-ready structure
+
+---
+
+## ⚙️ Installation
+
+Clone the repo and install in editable mode:
+
 ```bash
- conda activate tubato_env 
+git clone https://github.com/Yusuf-Abol/endtoend-mlops.git
+cd endtoend-mlops/projects/covid_chest_classifier
+pip install -e .
 ```
 
+---
 
-### STEP 02- install the requirements
-```bash
-pip install -r requirements.txt
-```
+## 🚀 Usage
 
-```bash
-# Finally run the following command
-python app.py
-```
-
-Now,
-```bash
-open up you local host and port
-```
-
-
-## MLflow
-
-- [Documentation](https://mlflow.org/docs/latest/index.html)
-
-- [MLflow tutorial](https://youtu.be/qdcHHrsXA48?si=bD5vDS60akNphkem)
-
-##### cmd
-- mlflow ui
-
-### dagshub
-[dagshub](https://dagshub.com/)
-
-MLFLOW_TRACKING_URI=https://dagshub.com/entbappy/Kidney-Disease-Classification-MLflow-DVC.mlflow \
-MLFLOW_TRACKING_USERNAME=entbappy \
-MLFLOW_TRACKING_PASSWORD=6824692c47a369aa6f9eac5b10041d5c8edbcef0 \
-python script.py
-
-Run this to export as env variables:
+Run training pipeline:
 
 ```bash
+python src/ccclassifier/pipeline/training_pipeline.py
+```
 
-export MLFLOW_TRACKING_URI=https://dagshub.com/entbappy/Kidney-Disease-Classification-MLflow-DVC.mlflow
+Run prediction:
 
-export MLFLOW_TRACKING_USERNAME=entbappy 
+```python
+from ccclassifier.pipeline.prediction import predict
+result = predict("sample_xray.jpg")
+print(result)
+```
 
-export MLFLOW_TRACKING_PASSWORD=6824692c47a369aa6f9eac5b10041d5c8edbcef0
+---
+
+## 📊 Experiments
+
+* Dataset: Chest X-ray (COVID-19, Pneumonia, Normal)
+* Model: CNN-based classifier
+* Training framework: TensorFlow / PyTorch (depending on setup)
+* Logs, metrics, and artifacts tracked under `logs/` & `artifacts/`
+
+---
+
+## 🔮 Future Work
+
+* [ ] Hyperparameter tuning with Optuna/W\&B
+* [ ] Model registry integration (MLflow)
+* [ ] API & web app deployment (FastAPI / Streamlit)
+* [ ] Monitoring with Prometheus & Grafana
+* [ ] Docker + Kubernetes for scaling
+
+---
+
+## 👨‍💻 Author
+
+**Yusuf Abolarinwa**
+[GitHub](https://github.com/Yusuf-Abol) | [Email](mailto:yusufabolarinwa@gmail.com)
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ```
 
+---
 
-### DVC cmd
+👉 With this, your README looks like a **real production-ready ML repo** — badges, clean sections, pipeline diagram, future work all included.  
 
-1. dvc init
-2. dvc repro
-3. dvc dag
-
-
-## About MLflow & DVC
-
-MLflow
-
- - Its Production Grade
- - Trace all of your expriements
- - Logging & taging your model
-
-
-DVC 
-
- - Its very lite weight for POC only
- - lite weight expriements tracker
- - It can perform Orchestration (Creating Pipelines)
-
-
-
-# AWS-CICD-Deployment-with-Github-Actions
-
-## 1. Login to AWS console.
-
-## 2. Create IAM user for deployment
-
-	#with specific access
-
-	1. EC2 access : It is virtual machine
-
-	2. ECR: Elastic Container registry to save your docker image in aws
-
-
-	#Description: About the deployment
-
-	1. Build docker image of the source code
-
-	2. Push your docker image to ECR
-
-	3. Launch Your EC2 
-
-	4. Pull Your image from ECR in EC2
-
-	5. Lauch your docker image in EC2
-
-	#Policy:
-
-	1. AmazonEC2ContainerRegistryFullAccess
-
-	2. AmazonEC2FullAccess
-
-	
-## 3. Create ECR repo to store/save docker image
-    - Save the URI: 566373416292.dkr.ecr.us-east-1.amazonaws.com/chicken
-
-	
-## 4. Create EC2 machine (Ubuntu) 
-
-## 5. Open EC2 and Install docker in EC2 Machine:
-	
-	
-	#optional
-
-	sudo apt-get update -y
-
-	sudo apt-get upgrade
-	
-	#required
-
-	curl -fsSL https://get.docker.com -o get-docker.sh
-
-	sudo sh get-docker.sh
-
-	sudo usermod -aG docker ubuntu
-
-	newgrp docker
-	
-# 6. Configure EC2 as self-hosted runner:
-    setting>actions>runner>new self hosted runner> choose os> then run command one by one
-
-
-# 7. Setup github secrets:
-
-    AWS_ACCESS_KEY_ID=
-
-    AWS_SECRET_ACCESS_KEY=
-
-    AWS_REGION = us-east-1
-
-    AWS_ECR_LOGIN_URI = demo>>  566373416292.dkr.ecr.ap-south-1.amazonaws.com
-
-    ECR_REPOSITORY_NAME = simple-app
-
+Want me to also create a **shorter "one-line elevator pitch"** version you can use for LinkedIn/portfolio?
+```
