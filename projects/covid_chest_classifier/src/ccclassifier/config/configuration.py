@@ -1,7 +1,7 @@
 from ccclassifier.constants import *
 from ccclassifier.utils.common import read_yaml, create_directories
-from ccclassifier.entity.config_entity import (DataIngestionConfig)
-                                                #PrepareBaseModelConfig,
+from ccclassifier.entity.config_entity import (DataIngestionConfig,
+                                                PrepareBaseModelConfig)
                                                 #TrainingConfig,
                                                 #EvaluationConfig)
 
@@ -31,3 +31,22 @@ class ConfigurationManager:
         )
 
         return data_ingestion_config
+    
+    
+    def get_prepare_base_model_config(self) -> PrepareBaseModelConfig:
+        config = self.config.prepare_base_model
+
+        create_directories([config.root_dir])
+
+        prepare_base_model_config = PrepareBaseModelConfig(
+            root_dir=Path(config.root_dir),
+            base_model_path=Path(config.base_model_path),
+            updated_base_model_path=Path(config.updated_base_model_path),
+            params_image_size=self.params.base_model.image_size,
+            params_learning_rate=self.params.training.learning_rate,
+            params_weights=self.params.base_model.weights,
+            params_classes=self.params.base_model.num_classes,
+            params_freeze_base=self.params.base_model.freeze_base,
+        )
+
+        return prepare_base_model_config
