@@ -10,5 +10,4 @@ artifacts/*
 src/ccclassifier/logs/
 model/*
 
-# Datasets
-notebooks/Covid19-dataset.zip
+
