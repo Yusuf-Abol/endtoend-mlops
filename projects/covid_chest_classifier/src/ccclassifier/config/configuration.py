@@ -1,8 +1,9 @@
+import os
 from ccclassifier.constants import *
 from ccclassifier.utils.common import read_yaml, create_directories
 from ccclassifier.entity.config_entity import (DataIngestionConfig,
-                                                PrepareBaseModelConfig)
-                                                #TrainingConfig,
+                                                PrepareBaseModelConfig,
+                                                TrainingConfig)
                                                 #EvaluationConfig)
 
 class ConfigurationManager:
@@ -50,3 +51,36 @@ class ConfigurationManager:
         )
 
         return prepare_base_model_config
+    
+    
+    def get_training_config(self) -> TrainingConfig:
+        training = self.config.training
+        prepare_base_model = self.config.prepare_base_model
+        training_data = os.path.join(self.config.data_ingestion.unzip_dir, "Covid19-dataset")
+
+        create_directories([Path(training.root_dir)])
+
+        training_config = TrainingConfig(
+            root_dir=Path(training.root_dir),
+            trained_model_path=Path(training.trained_model_path),
+            updated_base_model_path=Path(prepare_base_model.updated_base_model_path),
+            training_data=Path(training_data),
+
+            # all pulled from config.yaml:training
+            params_epochs=training.epochs,
+            params_batch_size=training.batch_size,
+            params_is_augmentation=getattr(training, "augmentation", False),
+            params_image_size=self.config.base_model.image_size,
+            params_learning_rate=training.learning_rate,
+            params_optimizer=training.optimizer,
+            params_loss_fn=training.loss_fn,
+            params_device=training.device,
+            params_val_split=getattr(training, "val_split", 0.2),   # <--- NEW
+            params_patience=getattr(training, "patience", 5),
+            checkpoint_interval=getattr(training, "checkpoint_interval", 5),
+            # num_classes from base_model
+            num_classes=self.config.base_model.num_classes
+            
+        )
+
+        return training_config

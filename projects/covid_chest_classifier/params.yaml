@@ -12,3 +12,5 @@ training:
   optimizer: Adam
   loss_fn: CrossEntropyLoss
   device: "cpu"              # change to "cuda" if GPU available
+  patience: 5
+  
