@@ -1,8 +1,6 @@
 # Python cache / bytecode
 __pycache__/*
-*.pyc
-*.pyo
-*.pyd
+
 
 # Logs and artifacts
 logs/
