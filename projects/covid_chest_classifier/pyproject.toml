@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=64", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ccclassifier"
+version = "0.0.0"
+description = "A small python package for image detection"
+authors = [
+    { name = "Yusuf-Abol", email = "yusufabolarinwa@gmail.com" }
+]
+readme = "README.md"
+requires-python = ">=3.7"
+
+[project.urls]
+Homepage = "https://github.com/Yusuf-Abol/endtoend-mlops"
+"Bug Tracker" = "https://github.com/Yusuf-Abol/endtoend-mlops/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]

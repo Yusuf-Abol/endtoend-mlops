@@ -1,9 +1,11 @@
 base_model:
   name: resnet18
-  weights: IMAGENET1K_V1     # or null for random init
+  weights: IMAGENET1K_V1
   num_classes: 3
   freeze_base: true
   image_size: [224, 224]
+  log_model_summary: true
+  learning_rate: 0.001
 
 training:
   epochs: 23
@@ -11,6 +13,9 @@ training:
   learning_rate: 0.001
   optimizer: Adam
   loss_fn: CrossEntropyLoss
-  device: "cpu"              # change to "cuda" if GPU available
+  device: "cpu"
   patience: 5
+  val_split: 0.2
+  checkpoint_interval: 5
+
   
