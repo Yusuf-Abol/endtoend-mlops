@@ -1,0 +1,61 @@
+stages:
+  data_ingestion:
+    cmd: python src/ccclassifier/pipeline/stage_01_data_ingestion.py
+    deps:
+      - src/ccclassifier/pipeline/stage_01_data_ingestion.py
+      - config/config.yaml
+    outs:
+      - artifacts/data_ingestion/Covid19-dataset
+
+
+  prepare_base_model:
+    cmd: python src/ccclassifier/pipeline/stage_02_prepare_base_model.py
+    deps:
+      - src/ccclassifier/pipeline/stage_02_prepare_base_model.py
+      - config/config.yaml
+    params:
+      - name
+      - weights
+      - num_classes
+      - freeze_base
+      - image_size
+      - log_model_summary
+      - learning_rate
+    outs:
+      - artifacts/prepare_base_model
+
+
+  training:
+    cmd: python src/ccclassifier/pipeline/stage_03_model_training.py
+    deps:
+      - src/ccclassifier/pipeline/stage_03_model_training.py
+      - config/config.yaml
+      - artifacts/data_ingestion/Covid19-dataset
+      - artifacts/prepare_base_model
+    params:
+      - epochs
+      - batch_size
+      - learning_rate
+      - optimizer
+      - loss_fn
+      - device
+      - patience
+      - val_split
+      - checkpoint_interval
+    outs:
+      - artifacts/training/model.pth
+
+
+  evaluation:
+    cmd: python src/cnnClassifier/pipeline/stage_04_model_evaluation.py
+    deps:
+      - src/cnnClassifier/pipeline/stage_04_model_evaluation.py
+      - config/config.yaml
+      - artifacts/data_ingestion/Covid19-dataset
+      - artifacts/training/model.pth
+    params:
+      - IMAGE_SIZE
+      - BATCH_SIZE
+    metrics:
+    - scores.json:
+        cache: false

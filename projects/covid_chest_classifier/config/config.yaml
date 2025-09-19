@@ -33,3 +33,6 @@ training:
   patience: 5
   val_split: 0.2   # <--- NEW
   checkpoint_interval: 5  
+
+evaluation:
+  metrics_file: artifacts/evaluation/metrics.json

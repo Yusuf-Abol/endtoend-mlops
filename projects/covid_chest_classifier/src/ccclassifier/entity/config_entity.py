@@ -42,3 +42,13 @@ class TrainingConfig:
     num_classes: int
     checkpoint_interval: int  
     params_val_split: float = 0.2  
+
+@dataclass
+class EvaluationConfig:
+    model_path: Path
+    training_data: Path
+    image_size: list
+    batch_size: int
+    device: str
+    num_classes: int
+    metrics_file: Path
