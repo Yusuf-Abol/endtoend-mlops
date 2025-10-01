@@ -1,6 +1,6 @@
 import os
 from ccclassifier.constants import *
-from ccclassifier.utils.common import read_yaml, create_directories
+from ccclassifier.utils.common import read_yaml, create_directories, save_json
 from ccclassifier.entity.config_entity import (DataIngestionConfig,
                                                 PrepareBaseModelConfig,
                                                 TrainingConfig,

@@ -43,7 +43,7 @@ class TrainingConfig:
     checkpoint_interval: int  
     params_val_split: float = 0.2  
 
-@dataclass
+@dataclass(frozen=True)
 class EvaluationConfig:
     model_path: Path
     training_data: Path
