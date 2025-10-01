@@ -2,19 +2,19 @@ base_model:
   name: resnet18
   weights: IMAGENET1K_V1
   num_classes: 3
-  freeze_base: true
+  freeze_base: false
   image_size: [224, 224]
   log_model_summary: true
-  learning_rate: 0.001
+  learning_rate: 0.0001
 
 training:
-  epochs: 23
+  epochs: 30
   batch_size: 32
-  learning_rate: 0.001
+  learning_rate: 0.0001
   optimizer: Adam
   loss_fn: CrossEntropyLoss
   device: "cpu"
-  patience: 5
+  patience: 10
   val_split: 0.2
   checkpoint_interval: 5
 
